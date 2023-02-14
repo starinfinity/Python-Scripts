@@ -1,0 +1,27 @@
+import xml.etree.ElementTree as ET
+
+# Set the fixed length of each field in the file
+field_lengths = [10, 20, 30]
+
+# Open the input file
+with open('input.txt', 'r') as infile:
+    # Create the root element for the XML tree
+    root = ET.Element('data')
+
+    # Iterate over each line in the file
+    for line in infile:
+        # Split the line into fields based on the fixed length
+        fields = [line[i:i+length].strip() for i, length in enumerate(field_lengths)]
+
+        # Create a new element for each record and add it to the tree
+        record = ET.SubElement(root, 'record')
+
+        # Add a child element for each field in the record
+        for i, field in enumerate(fields):
+            field_name = 'field{}'.format(i+1)
+            field_elem = ET.SubElement(record, field_name)
+            field_elem.text = field
+
+# Write the XML tree to an output file
+with open('output.xml', 'w') as outfile:
+    outfile.write(ET.tostring(root).decode('utf-8'))
