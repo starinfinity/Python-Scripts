@@ -1,0 +1,52 @@
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout
+
+class Calculator(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.label1 = QLabel('Value 1')
+        self.entry1 = QLineEdit()
+        self.label2 = QLabel('Value 2')
+        self.entry2 = QLineEdit()
+        self.button = QPushButton('Calculate')
+        self.result_label = QLabel()
+
+        self.button.clicked.connect(self.calculate)
+
+        hbox1 = QHBoxLayout()
+        hbox1.addWidget(self.label1)
+        hbox1.addWidget(self.entry1)
+        hbox2 = QHBoxLayout()
+        hbox2.addWidget(self.label2)
+        hbox2.addWidget(self.entry2)
+        hbox3 = QHBoxLayout()
+        hbox3.addWidget(self.button)
+        vbox = QVBoxLayout()
+        vbox.addLayout(hbox1)
+        vbox.addLayout(hbox2)
+        vbox.addLayout(hbox3)
+        vbox.addWidget(self.result_label)
+
+        self.setLayout(vbox)
+
+        self.setGeometry(300, 300, 300, 200)
+        self.setWindowTitle('Calculator')
+        self.show()
+
+    def calculate(self):
+        try:
+            value1 = float(self.entry1.text())
+            value2 = float(self.entry2.text())
+            result = value1 + value2  # perform your calculation here
+            self.result_label.setText(f'Result: {result}')
+        except ValueError:
+            self.result_label.setText('Invalid input')
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    calculator = Calculator()
+    sys.exit(app.exec_())
+
