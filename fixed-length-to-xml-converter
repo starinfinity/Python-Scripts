@@ -1,27 +1,43 @@
 import xml.etree.ElementTree as ET
 
-# Set the fixed length of each field in the file
-field_lengths = [10, 20, 30]
+# Define the fixed length file format
+record_format = [
+    {'name': 'name', 'length': 10},
+    {'name': 'age', 'length': 3},
+    {'name': 'gender', 'length': 1},
+    {'name': 'address', 'length': 20},
+    {'name': 'city', 'length': 10},
+    {'name': 'state', 'length': 2}
+]
 
-# Open the input file
-with open('input.txt', 'r') as infile:
-    # Create the root element for the XML tree
-    root = ET.Element('data')
+# Define the input file path
+input_file_path = 'input_file.txt'
 
-    # Iterate over each line in the file
-    for line in infile:
-        # Split the line into fields based on the fixed length
-        fields = [line[i:i+length].strip() for i, length in enumerate(field_lengths)]
+# Define the output file path
+output_file_path = 'output_file.xml'
 
-        # Create a new element for each record and add it to the tree
-        record = ET.SubElement(root, 'record')
-
-        # Add a child element for each field in the record
-        for i, field in enumerate(fields):
-            field_name = 'field{}'.format(i+1)
-            field_elem = ET.SubElement(record, field_name)
-            field_elem.text = field
-
-# Write the XML tree to an output file
-with open('output.xml', 'w') as outfile:
-    outfile.write(ET.tostring(root).decode('utf-8'))
+# Open the input file for reading
+with open(input_file_path, 'r') as f:
+    # Create the root element of the XML tree
+    root = ET.Element('records')
+    
+    # Loop through each line in the input file
+    for line in f:
+        # Create a new record element for this line
+        record_element = ET.SubElement(root, 'record')
+        
+        # Loop through each field in the record format
+        for field in record_format:
+            # Extract the field value from the line based on the field length
+            field_value = line[:field['length']].strip()
+            
+            # Create a new child element for this field value
+            field_element = ET.SubElement(record_element, field['name'])
+            field_element.text = field_value
+            
+            # Remove the field value from the line
+            line = line[field['length']:]
+    
+    # Create the XML tree and write it to the output file
+    tree = ET.ElementTree(root)
+    tree.write(output_file_path, xml_declaration=True, encoding='UTF-8')
